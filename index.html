@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
+
+  <title>Frontend Mentor | Grid landing page</title>
+
+  <style>
+    /* ==========================================
+       1. التنسيقات العامة (Reset & Base Styles)
+       ========================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      color: hsl(0, 0%, 100%);
+    }
+
+    body {
+      background-color: hsl(228, 99%, 58%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2.5rem 3rem; /* تصحيح: مسافات متناسقة مع تصميم الديسكتوب */
+      position: relative;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    /* ==========================================
+       2. رأس الصفحة (Header & Nav)
+       ========================================== */
+    .Header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      /* تصحيح الخطأ: z-index لا يقبل النسبة المئوية (%)، تم جعله رقماً صحيحاً */
+      z-index: 100; 
+    }
+
+    .Nav {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.5px;
+    }
+
+    .MenuImg {
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      z-index: 1001; /* تصحيح: لضمان ظهور زر الإغلاق/القائمة فوق طبقة القائمة الجانبية */
+    }
+
+    /* ==========================================
+       3. الحاوية الرئيسية والشبكة (Grid Layout)
+       ========================================== */
+    .Card {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      margin: 2rem 0;
+    }
+
+    .Squers {
+      width: 100%; /* إضافة: لضمان أخذ الشبكة العرض الكامل للحاوية */
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 2rem;
+      align-items: center; /* إضافة: محاذاة العناصر عمودياً في المنتصف */
+    }
+
+    .FirstSquer {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-right: 2rem;
+    }
+
+    .title {
+      font-size: 56px;
+      line-height: 1.05;
+      margin-bottom: 2rem;
+      font-weight: 500;
+    }
+
+    .Prograph {
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    .SecondSquer {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 1.5rem; /* تعديل المسافة لتكون مطابقة للتصميم */
+    }
+
+    .Squer {
+      /* تصحيح: استخدام لون الحدود بشفافية مطابقة للتصميم الأصلي */
+      border: 1px solid hsla(0, 0%, 100%, 0.2); 
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-radius: 4px;
+      background-color: hsla(0, 0%, 100%, 0.03); /* إضافة خفيفة لتمييز المربعات */
+    }
+
+    .HeadOfTheSquer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem; /* إضافة مسافة بين الأيقونة والرقم */
+    }
+
+    .Number {
+      font-size: 40px;
+      font-weight: 500;
+    }
+
+    /* تصحيح خطأ تداخل الكلاسات: تم فصل الكلاسات لتجنب وراثة خصائص خاطئة */
+    .textAtBottomOfSquer .Mini {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+    }
+
+    .textAtBottomOfSquer .miniPrograph {
+      font-size: 14px;
+      font-weight: 400;
+      opacity: 0.8;
+      line-height: 1.4;
+    }
+
+    /* ==========================================
+       4. تذييل الصفحة (Footer)
+       ========================================== */
+    .Footer {
+      display: flex;
+      justify-content: space-between;
+      opacity: 0.8;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    /* ==========================================
+       5. القائمة الجانبية المنسدلة (Overlay Menu)
+       ========================================== */
+    .menuContant {
+      display: none;
+      position: fixed; /* تصحيح: استخدام fixed بدلاً من absolute لكي تغطي الشاشة بشكل صحيح عند التمرير */
+      top: 0;
+      right: 0;
+      width: 350px; /* تحديد عرض ثابت ومناسب للقائمة الجانبية في الديسكتوب */
+      height: 100vh;
+      background-color: hsl(220, 100%, 64%);
+      z-index: 1000;
+      padding:4rem 3rem;
+      flex-direction: column;
+      gap: 1.5rem;
+      backdrop-filter: blur(5px);
+    }
+
+    .menuContant.open {
+      display: flex;
+    }
+    .menuContant .close-icon {
+  align-self: flex-end; /* وضعها في أقصى اليمين داخل القائمة */
+  cursor: pointer;
+  margin-bottom: 2rem; /* مسافة بينها وبين روابط القائمة (About, Our Work...) */
+  width: 24px;
+  height: 24px;
+}
+
+    .menuContant h3 {
+      font-size: 24px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    /* تصحيح خطأ في الـ Selector الخاص بالـ Hover (تم إزالة الفراغ الزائد) */
+    .menuContant h3:hover {
+      opacity: 0.7;
+      text-decoration: underline;
+      text-underline-offset: 6px;
+    }
+
+    /* ==========================================
+       6. الشاشات الصغيرة (Mobile Responsive)
+       ========================================== */
+    @media (max-width: 48em) {
+      body {
+        padding: 1.5rem;
+      }
+      
+      .Squers {
+        grid-template-columns: 1fr;
+      }
+      
+      .SecondSquer {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+      }
+      
+      .title {
+        font-size: 38px;
+      }
+
+      .FirstSquer {
+        padding-right: 0;
+      }
+      
+      .menuContant {
+        width: 100%; /* في الشاشات الصغيرة تكون القائمة بعرض الشاشة بالكامل */
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <div class="Header">
+    <h5 class="Nav">Bridge Collective</h5>
+    <img src="assets/images/icon-menu.svg" alt="Menu" class="MenuImg" id="menuToggle" />
+  </div>
+
+  <div class="Card">
+    <div class="Squers">
+
+      <!-- Hero -->
+      <div class="FirstSquer">
+        <h1 class="title">A classroom for every child.</h1>
+        <p class="Prograph">
+          We fund the schools, train the teachers, and<br>
+          measure what works — so every child we reach<br>
+          today becomes a graduate tomorrow.
+        </p>
+      </div>
+
+      <!-- Stats -->
+      <div class="SecondSquer">
+
+        <!-- Squer 1 -->
+        <div class="Squer">
+          <div class="HeadOfTheSquer">
+            <img src="assets/images/icon-sparkle.svg" alt="Sparkle" class="PlusImg"/>
+            <h2 class="Number">2.4M</h2>
+          </div>
+          <div class="textAtBottomOfSquer">
+            <!-- تصحيح الخطأ: تمت إزالة كلاس title لتجنب تطبيق خطأ الخط الكبير 56px على النصوص الصغيرة -->
+            <p class="Mini">Students reached</p>
+            <p class="miniPrograph">Across 31 countries since 2011.</p>
+          </div>
+        </div>
+
+        <!-- Squer 2 -->
+        <div class="Squer">
+          <div class="HeadOfTheSquer">
+            <img src="assets/images/icon-plus.svg" alt="Plus" class="PlusImg"/>
+            <h2 class="Number">1,284</h2> 
+          </div>
+          <div class="textAtBottomOfSquer">
+            <p class="Mini">Schools partnered</p>
+            <p class="miniPrograph">In 14 countries, from Kenya to Guatemala.</p>
+          </div>
+        </div>
+
+        <!-- Squer 3 -->
+        <div class="Squer">
+          <div class="HeadOfTheSquer">
+            <img src="assets/images/icon-arrow-right.svg" alt="Arrow" class="PlusImg"/>
+            <h2 class="Number">38K</h2>
+          </div>
+          <div class="textAtBottomOfSquer">
+            <p class="Mini">Teachers trained</p>
+            <p class="miniPrograph">Equipped with modern tools and methodology.</p>
+          </div>
+        </div>
+
+        <!-- Squer 4 -->
+        <div class="Squer">
+          <div class="HeadOfTheSquer">
+            <img src="assets/images/icon-trending-up.svg" alt="Trending" class="PlusImg"/>
+            <h2 class="Number">3.1×</h2>
+          </div>
+          <div class="textAtBottomOfSquer">
+            <p class="Mini">Graduation lift</p>
+            <p class="miniPrograph">Partner schools outperform national averages 3x.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="Footer">
+    <h5>© 2026 Bridge Collective</h5>
+    <h5>Registered charity 12345678</h5>
+  </div>
+
+  <!-- Menu panel -->
+  <div class="menuContant" id="menuPanel">
+    <img src="assets/images/icon-close.svg" alt="Close Menu" class="MenuImg close-icon" id="closeMenuBtn" />
+    <h3>About</h3>
+    <h3>Our Work</h3>
+    <h3>Partners</h3>
+    <h3>Annual Report</h3>
+    <h3>Donate</h3>
+  </div>
+
+  <script>
+  const menuBtn = document.getElementById('menuToggle');
+const menuPanel = document.getElementById('menuPanel');
+const closeBtn = document.getElementById('closeMenuBtn'); // زر الإغلاق الجديد داخل القائمة
+
+// عند الضغط على زر القائمة الرئيسي في الهيدر
+menuBtn.addEventListener('click', () => {
+  menuPanel.classList.add('open'); // إظهار القائمة
+});
+
+// عند الضغط على زر الإغلاق (X) داخل القائمة
+if (closeBtn) {
+  closeBtn.addEventListener('click', () => {
+    menuPanel.classList.remove('open'); // إخفاء القائمة
+  });
+}
+  </script>
+</body>
+</html>
